@@ -6,8 +6,8 @@ Sometimes, just sometimes, you might want to backup your blips: this does a very
 * create a new directory with your username
 * starting from the most recent entry, work backwards until no previous entry is found
 * for each entry save:
-** content.json (the page content including comments, ratings and metadata)
-** image.jpg (the standard resolution image)
+ * content.json (the page content including comments, ratings and metadata)
+ * image.jpg (the standard resolution image)
 
 There are some limitations:
 * I didn't figure out how to get the high-res image
