@@ -38,8 +38,8 @@ def getData( params, basedir ):
             exit( 1 )
 
         m=r.json();
-        entryid=m['data']['entry']['entry_id_str']
-        previd=m['data']['related']['previous']['entry_id_str']
+        entryid=str(m['data']['entry']['entry_id'])
+        previd=str(m['data']['related']['previous']['entry_id'])
         imgurl=m['data']['entry']['image_url']
         thumburl=m['data']['entry']['thumbnail_url']
         print( "entry id: {0}, {1}".format( entryid, imgurl ) )
