@@ -9,6 +9,18 @@ import time
 baseendpoint='https://api.polaroidblipfoto.com/4/'
 accesstoken='305411915fa8ab4f0d4bf0a3bb2e38968f0a8d1a'
 
+# get and save an image
+def getAndSaveImage( url, accesstoken, savedir, name ):
+    # go and get the image
+    r=requests.get(url, headers={'Authorization':'Bearer '+accesstoken})
+    if r.status_code != requests.codes.ok:
+        print( "failed to fetch image: {0}".format( r.status_code ) )
+    else:
+        fid=open( os.path.join( savedir, name ), "wb" )
+        fid.write( r.content )
+        fid.close()
+    
+
 # need either entry_id or username
 def getData( params, basedir ):
     params.update(
@@ -18,45 +30,40 @@ def getData( params, basedir ):
           'include_replies': 1,
           'return_related': 1
         } )
-    
-    r=requests.get(baseendpoint+'entry', params=params, headers={'Authorization':'Bearer '+accesstoken})
-    if r.status_code != requests.codes.ok:
-        print( "failed to fetch data: {0}".format( r.status_code ) )
-        exit( 1 )
 
-    m=r.json();
-    entryid=m['data']['entry']['entry_id_str']
-    previd=None
-    if "previous" in m['data']['related'].keys():
-        previd=m['data']['related']['previous']['entry_id_str']
-    imgurl=m['data']['entry']['image_url']
-    print( "entry id: {0}, {1}".format( entryid, imgurl ) )
-
-    savedir=os.path.join( basedir, entryid )
-    if not os.path.exists( savedir ):
-        os.mkdir( savedir )
-
-        # save the content
-        fid=open( os.path.join( savedir, "content.json" ), "w+" )
-        fid.write( r.text )
-        fid.close()
-
-        # go and get the image
-        r=requests.get(imgurl, headers={'Authorization':'Bearer '+accesstoken})
+    try:   
+        r=requests.get(baseendpoint+'entry', params=params, headers={'Authorization':'Bearer '+accesstoken})
         if r.status_code != requests.codes.ok:
-            print( "failed to fetch image: {0}".format( r.status_code ) )
-        else:
-            fid=open( os.path.join( savedir, "image.jpg" ), "wb" )
-            fid.write( r.content )
+            print( "failed to fetch data: {0}".format( r.status_code ) )
+            exit( 1 )
+
+        m=r.json();
+        entryid=m['data']['entry']['entry_id_str']
+        previd=m['data']['related']['previous']['entry_id_str']
+        imgurl=m['data']['entry']['image_url']
+        thumburl=m['data']['entry']['thumbnail_url']
+        print( "entry id: {0}, {1}".format( entryid, imgurl ) )
+
+        savedir=os.path.join( basedir, entryid )
+        if not os.path.exists( savedir ):
+            os.mkdir( savedir )
+
+            # save the content
+            fid=open( os.path.join( savedir, "content.json" ), "w+" )
+            fid.write( r.text )
             fid.close()
 
-        print( "saved content and image!" )
-    else:
-        print( "looks like you already have this entry; skipping..." )
+            # go and get the images
+            getAndSaveImage( imgurl, accesstoken, savedir, "image.jpg" );
+            getAndSaveImage( thumburl, accesstoken, savedir, "thumbnail.jpg" );
 
-    if previd is None:
-        print( "no more entries" )
-        exit( 0 )
+            print( "saved content and image!" )
+        else:
+            print( "looks like you already have this entry; skipping..." )
+
+    except:
+        print( "no more entries?" )
+        raise
 
     time.sleep( 2 )
     getData( { 'entry_id': previd }, basedir )
