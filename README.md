@@ -15,7 +15,7 @@ There are some limitations:
 
 To run you'll need python3 (2 should probably work too) and it should be run as:
 
-* python3 previewer.py <username> (for me: tpd)
+* python3 previewer.py `username` (for me: tpd)
 
 I've only tested this on Linux; if anyone would like to test and fix on OS X or windows please do.
 
