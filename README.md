@@ -17,7 +17,10 @@ To run you'll need python3 (2 should probably work too) and http://docs.python-r
 
 To run:
 
-* python3 previewer.py `username` (for me: tpd)
+* python3 previewer.py `username` [entry_id] (for me: username is tpd)
+
+You can optionally specify as the third argument the starting entry id; this is usually a number e.g.
+2642461 (an old one; longer for new entries).
 
 I've only tested this on Linux; if anyone would like to test and fix on OS X or windows please do.
 
