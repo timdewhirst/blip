@@ -26,7 +26,9 @@ def getData( params, basedir ):
 
     m=r.json();
     entryid=m['data']['entry']['entry_id_str']
-    previd=m['data']['related']['previous']['entry_id_str']
+    previd=None
+    if "previous" in m['data']['related'].keys():
+        previd=m['data']['related']['previous']['entry_id_str']
     imgurl=m['data']['entry']['image_url']
     print( "entry id: {0}, {1}".format( entryid, imgurl ) )
 
@@ -61,16 +63,20 @@ def getData( params, basedir ):
         
     
 def main( argv ):
-    if len( argv ) != 2:
-        print( "usage: {0} <username>".format( argv[0] ) )
+    if len( argv ) < 2:
+        print( "usage: {0} <username> [first entry id]".format( argv[0] ) )
         exit( 1 )
 
     # okay, let's go! start from most recent and work backwards
     username=argv[1]
     if not os.path.exists( username ):
         os.mkdir( username )
-        
-    getData( { 'username': username }, username )
+
+    initialq={'username': username}
+    if len( argv ) == 3:
+        initialq={'entry_id': argv[2]}
+
+    getData( initialq, username )
 
 if __name__ == "__main__":
     main( sys.argv )
