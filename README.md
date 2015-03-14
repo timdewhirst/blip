@@ -13,7 +13,9 @@ There are some limitations:
 * I didn't figure out how to get the high-res image
 * it will sleep for 2s between fetching each entry to avoid spamming blipfoto's servers
 
-To run you'll need python3 (2 should probably work too) and it should be run as:
+To run you'll need python3 (2 should probably work too) and http://docs.python-requests.org/en/latest/
+
+To run:
 
 * python3 previewer.py `username` (for me: tpd)
 
