@@ -63,7 +63,7 @@ def getData( params, basedir ):
 
     except:
         print( "no more entries?" )
-        raise
+        exit(0)
 
     time.sleep( 2 )
     getData( { 'entry_id': previd }, basedir )
