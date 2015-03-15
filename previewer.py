@@ -9,8 +9,8 @@ import time
 # fill me in!
 # get your own app credentials from here:
 # https://www.polaroidblipfoto.com/developer/api (see README.md)
-baseendpoint=""
-accesstoken=""
+baseendpoint=''
+accesstoken=''
 
 # get and save an image
 def getAndSaveImage( url, accesstoken, savedir, name ):
@@ -35,15 +35,20 @@ def getData( params, basedir ):
           'return_image_urls': 1
         } )
 
-    try:   
-        r=requests.get(baseendpoint+'entry', params=params, headers={'Authorization':'Bearer '+accesstoken})
-        if r.status_code != requests.codes.ok:
-            print( "failed to fetch data: {0}".format( r.status_code ) )
-            exit( 1 )
+    # make the request; extract the JSON
+    r=requests.get(baseendpoint+'entry', params=params, headers={'Authorization':'Bearer '+accesstoken})
+    if r.status_code != requests.codes.ok:
+        print( "failed to fetch data: {0}".format( r.status_code ) )
+        exit( 1 )
 
-        m=r.json();
+    m=r.json();
+
+    # extract the information we're interested in
+    try:   
         entryid=str(m['data']['entry']['entry_id'])
-        previd=str(m['data']['related']['previous']['entry_id'])
+        previd=None
+        if m['data']['related']['previous'] != None:
+            previd=str(m['data']['related']['previous']['entry_id'])
         imgurl=m['data']['entry']['image_url']
         thumburl=m['data']['entry']['thumbnail_url']
         print( "entry id: {0}, {1}".format( entryid, imgurl ) )
@@ -65,9 +70,13 @@ def getData( params, basedir ):
         else:
             print( "looks like you already have this entry; skipping..." )
 
+        if previd == None:
+            print( "no more entries!" )
+            return
+    
     except:
-        print( "no more entries?" )
-        exit(0)
+        print( "got an error: {0}".format( r.json() ) )
+        raise
 
     time.sleep( 2 )
     getData( { 'entry_id': previd }, basedir )
