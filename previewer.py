@@ -6,8 +6,11 @@ import sys
 import json
 import time
 
-baseendpoint='https://api.polaroidblipfoto.com/4/'
-accesstoken='305411915fa8ab4f0d4bf0a3bb2e38968f0a8d1a'
+# fill me in!
+# get your own app credentials from here:
+# https://www.polaroidblipfoto.com/developer/api (see README.md)
+baseendpoint=""
+accesstoken=""
 
 # get and save an image
 def getAndSaveImage( url, accesstoken, savedir, name ):
@@ -28,7 +31,8 @@ def getData( params, basedir ):
           'return_metadata': 1,
           'return_comments': 1,
           'include_replies': 1,
-          'return_related': 1
+          'return_related': 1,
+          'return_image_urls': 1
         } )
 
     try:   
@@ -54,9 +58,9 @@ def getData( params, basedir ):
             fid.close()
 
             # go and get the images
-            getAndSaveImage( imgurl, accesstoken, savedir, "image.jpg" );
-            getAndSaveImage( thumburl, accesstoken, savedir, "thumbnail.jpg" );
-
+            getAndSaveImage( imgurl, accesstoken, savedir, "image.jpg" )
+            getAndSaveImage( thumburl, accesstoken, savedir, "thumbnail.jpg" )
+            
             print( "saved content and image!" )
         else:
             print( "looks like you already have this entry; skipping..." )
